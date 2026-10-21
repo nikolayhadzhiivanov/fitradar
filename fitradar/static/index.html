@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitRadar BG — Радар за цени на фитнес добавки в България</title>
+    <!-- Modern Tailwind CSS for crisp utility design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('catalog')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-bolt text-slate-950 text-xl font-black"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl font-black tracking-tight text-white">FitRadar<span class="text-emerald-400">BG</span></span>
+                        <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Euro (€) Price Index</span>
+                    </div>
+                    <p class="text-xs text-slate-400 hidden sm:block">Сравнение на цени в евро (€/100g) и кошници в българските магазини</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center space-x-1 sm:space-x-2 bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
+                <button onclick="switchTab('catalog')" id="tab-btn-catalog" class="tab-btn active px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center space-x-1.5">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Каталог и Цени (€)</span>
+                </button>
+                <button onclick="switchTab('basket')" id="tab-btn-basket" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center space-x-1.5">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Smart Stack (Кошница €)</span>
+                </button>
+                <button onclick="switchTab('advisor')" id="tab-btn-advisor" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center space-x-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i>
+                    <span>AI Съветник (€)</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ==================== TAB 1: CATALOG & PRICE COMPARISON ==================== -->
+        <section id="tab-catalog" class="tab-content block">
+            <!-- Hero Search & Value Metric Explanation -->
+            <div class="mb-6 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30 border border-slate-800 relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                        Спри да плащаш за "кутия" — <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">сравнявай цена в евро (€) за 100g активно вещество</span>
+                    </h1>
+                    <p class="text-sm text-slate-400 mb-5 leading-relaxed">
+                        Индексираме добавки от <strong class="text-slate-200">Декатлон, Сила БГ, Workout.bg, GymBeam, Фитнес 1 и MyProtein</strong>. Нормализираме теглата и изчисляваме точната цена в евро за 100g, за да откриеш най-изгодната покупка.
+                    </p>
+
+                    <!-- Search Input & Quick Controls -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchInput" placeholder="Търси продукт, марка (напр. Corength, Gold Standard, Iso Whey, Креатин)..." 
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="sortSelect" class="bg-slate-950 border border-slate-700/80 text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500">
+                                <option value="price_per_100g_asc">⚡ Цена за 100g (€) (Най-евтино)</option>
+                                <option value="price_asc">💰 Крайна цена (€) (Възходяща)</option>
+                                <option value="price_desc">💰 Крайна цена (€) (Низходяща)</option>
+                                <option value="discount_desc">🏷️ Най-голямо намаление (%)</option>
+                                <option value="price_per_serving_asc">🥛 Цена за доза (€) (Най-ниска)</option>
+                                <option value="protein_desc">🧪 Най-висок % протеин</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="space-y-3 mb-6">
+                <!-- Category Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="categoryFilterContainer">
+                    <button onclick="setCategory('all')" class="cat-pill active px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Всички категории
+                    </button>
+                    <button onclick="setCategory('Суроватъчен концентрат')" class="cat-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Суроватъчен концентрат
+                    </button>
+                    <button onclick="setCategory('Суроватъчен изолат')" class="cat-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Суроватъчен изолат
+                    </button>
+                    <button onclick="setCategory('Креатин')" class="cat-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Креатин (Монохидрат/Creapure)
+                    </button>
+                    <button onclick="setCategory('Предтренировъчни')" class="cat-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Предтренировъчни буустъри
+                    </button>
+                    <button onclick="setCategory('Витамини и минерали')" class="cat-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all">
+                        Витамини & Минерали
+                    </button>
+                </div>
+
+                <!-- Store Filter Badges -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="storeFilterContainer">
+                    <span class="text-xs text-slate-500 uppercase tracking-wider font-bold mr-1">Магазин:</span>
+                    <button onclick="setStore('all')" class="store-pill active px-3 py-1 rounded-lg text-xs font-medium transition-all">Всички</button>
+                    <button onclick="setStore('silabg')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">Сила БГ</button>
+                    <button onclick="setStore('workoutbg')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">Workout.bg</button>
+                    <button onclick="setStore('gymbeam')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">GymBeam BG</button>
+                    <button onclick="setStore('fitnes1')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">Фитнес 1</button>
+                    <button onclick="setStore('myprotein')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">MyProtein BG</button>
+                    <button onclick="setStore('decathlon')" class="store-pill px-3 py-1 rounded-lg text-xs font-medium transition-all">Декатлон</button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-4 px-1">
+                <div>Намерени <span id="productCount" class="font-bold text-white">0</span> оферти</div>
+                <div class="flex items-center space-x-4">
+                    <span><i class="fa-solid fa-circle text-[8px] text-emerald-400 mr-1.5"></i>Нормализирани стойности (€/100g)</span>
+                    <span class="hidden sm:inline"><i class="fa-solid fa-truck text-slate-500 mr-1"></i>Включена логика за безплатна доставка</span>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Dynamically populated via app.js -->
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 2: SMART STACK BASKET ==================== -->
+        <section id="tab-basket" class="tab-content hidden">
+            <div class="mb-6 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/30 to-slate-900 border border-slate-800">
+                <div class="max-w-3xl">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-xs uppercase font-extrabold tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Кошница Оптимизатор</span>
+                        <h2 class="text-2xl font-black text-white">Smart Stack: Сравнение на пълна потребителска кошница</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-4">
+                        Не купувай само протеин — ако вземаш месечния си стак (протеин + креатин + буустър), 
+                        FitRadar изчислява коя комбинация от магазини ти спестява най-много пари, като отчита праговете за <strong>безплатна доставка</strong>.
+                    </p>
+
+                    <!-- Quick Pre-made Stack Templates -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs text-slate-400 self-center">Готови стакове:</span>
+                        <button onclick="loadStackPreset('basic')" class="px-3 py-1 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                            💪 Базов мускулен стак (Протеин + Креатин)
+                        </button>
+                        <button onclick="loadStackPreset('full')" class="px-3 py-1 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                            🔥 Пълен атлетичен стак (Протеин + Креатин + Pre-workout)
+                        </button>
+                        <button onclick="loadStackPreset('health')" class="px-3 py-1 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                            🌿 Здраве & Възстановяване (Изолат + Витамини)
+                        </button>
+                    </div>
+
+                    <!-- Basket Items Selection -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-3">
+                        <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">Избрани продукти за твоя месечен стак:</div>
+                        <div id="stackItemsList" class="space-y-2">
+                            <!-- Populated via app.js -->
+                        </div>
+                        <div class="pt-2 flex flex-wrap gap-2">
+                            <button onclick="addStackItem()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 transition flex items-center space-x-1">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>Добави още един продукт</span>
+                            </button>
+                            <button onclick="executeBasketCompare()" class="ml-auto px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 hover:brightness-110 shadow-lg shadow-emerald-500/20 transition flex items-center space-x-2">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>Сравни цената по магазини</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basket Comparison Results -->
+            <div id="basketResultsContainer" class="space-y-6">
+                <!-- Populated via app.js -->
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB 3: CONVERSATIONAL AI ADVISOR ==================== -->
+        <section id="tab-advisor" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-6 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-purple-950/20 to-slate-900 border border-slate-800">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-xs uppercase font-extrabold tracking-wider px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">AI Асистент</span>
+                        <h2 class="text-2xl font-black text-white">FitRadar AI Помощник за добавки</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-5">
+                        Вместо да се ровиш в сложни филтри, попитай на чист български език. Системата разпознава твоя бюджет, търсената категория и ценови предпочитания, след което прави интелигентна селекция.
+                    </p>
+
+                    <!-- Example Prompt Pills -->
+                    <div class="space-y-2 mb-4">
+                        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Примерни бързи въпроси:</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="askPreset('Търся суроватъчен протеин шоколад под 40 € с добра цена за 100g')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 transition text-left">
+                                💬 "Търся суроватъчен протеин шоколад под 40 €..."
+                            </button>
+                            <button onclick="askPreset('Кой креатин монохидрат е с най-добра цена за 100 грама в момента?')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 transition text-left">
+                                💬 "Кой креатин монохидрат е с най-добра цена за 100 грама..."
+                            </button>
+                            <button onclick="askPreset('Препоръчай ми предтренировъчен буустър на добра цена')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 transition text-left">
+                                💬 "Препоръчай ми предтренировъчен буустър на добра цена"
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat / Prompt Form -->
+                    <form id="advisorForm" onsubmit="handleAdvisorSubmit(event)" class="relative">
+                        <div class="flex gap-2">
+                            <input type="text" id="advisorInput" placeholder="Попитай нещо (напр. 'Искам чист изолат без лактоза под 50 €')..." 
+                                class="flex-1 px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                            <button type="submit" class="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold text-sm hover:brightness-110 shadow-lg shadow-purple-500/20 transition flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span class="hidden sm:inline">Попитай</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Advisor Output Card -->
+                <div id="advisorOutput" class="hidden space-y-4">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-8 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+            <p class="font-medium text-slate-400">FitRadar BG — Независим индекс за сравнение на цени и кошници на фитнес добавки в България.</p>
+            <p class="text-slate-600">Всички цени са нормализирани в Евро (€) по фиксиран курс 1 EUR = 1.95583 BGN.</p>
+        </div>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

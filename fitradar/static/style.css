@@ -1,0 +1,63 @@
+/* Custom Styles for FitRadar BG */
+
+.tab-btn {
+    color: #94a3b8;
+}
+.tab-btn:hover {
+    color: #f1f5f9;
+}
+.tab-btn.active {
+    background-color: #059669;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.cat-pill {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    color: #94a3b8;
+}
+.cat-pill:hover {
+    border-color: #334155;
+    color: #f8fafc;
+}
+.cat-pill.active {
+    background-color: #10b981;
+    color: #022c22;
+    border-color: #10b981;
+}
+
+.store-pill {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    color: #94a3b8;
+}
+.store-pill:hover {
+    border-color: #334155;
+    color: #f8fafc;
+}
+.store-pill.active {
+    background-color: #38bdf8;
+    color: #082f49;
+    border-color: #38bdf8;
+}
+
+/* Card hover transitions */
+.product-card-hover {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card-hover:hover {
+    transform: translateY(-2px);
+    border-color: #334155;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
